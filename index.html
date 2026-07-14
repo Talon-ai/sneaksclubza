@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth overflow-x-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>SNEAKSCLUBZA™ // ARCHIVAL SYSTEM</title>
+    <meta name="description" content="Premium South African techwear and sneaker platform. Clean brutalist design language combined with functional layouts.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        charcoal: '#1A1A1A',
+                        matteBlack: '#111111',
+                        arcticBlueGray: '#5C6E7E',
+                        frostWhite: '#FFFFFF',
+                        iceGray: '#E9ECEF',
+                        softSteelBlue: '#495057',
+                        cyberNeonBlue: '#1A659E',
+                        cyberCyan: '#2B7A78',
+                        glassWhite: 'rgba(255, 255, 255, 0.45)',
+                        glassBorder: 'rgba(255, 255, 255, 0.4)',
+                        appleGray: '#F5F5F7',
+                    },
+                    letterSpacing: {
+                        ultraWide: '0.2em',
+                        superWide: '0.35em',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        cyberGlow: '0 4px 20px rgba(26, 101, 158, 0.15)',
+                        neonBright: '0 4px 20px rgba(43, 122, 120, 0.2)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            background-color: #F5F5F7; /* Apple Classic Background */
+        }
+
+        body {
+            overscroll-behavior-x: none;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        img,
+        video,
+        canvas,
+        svg {
+            max-width: 100%;
+            display: block;
+        }
+
+        #scanlines {
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.01) 50%),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.003), rgba(0, 0, 0, 0.001), rgba(0, 0, 0, 0.003));
+            background-size: 100% 4px, 6px 100%;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .ambient-glow {
+            background: radial-gradient(circle at 50% 50%, rgba(26, 101, 158, 0.03) 0%, rgba(255, 255, 255, 0) 70%);
+        }
+
+        .text-stroke {
+            -webkit-text-stroke: 1px rgba(26, 26, 26, 0.15);
+            color: transparent;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(245, 245, 247, 0.50);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(26, 101, 158, 0.6);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        /* Glassmorphism Overhauls[cite: 2] */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.45) !important;
+            backdrop-filter: blur(25px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+        }
+
+        .glass-premium {
+            background: rgba(255, 255, 255, 0.3) !important;
+            backdrop-filter: blur(35px) saturate(200%) !important;
+            -webkit-backdrop-filter: blur(35px) saturate(200%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.03);
+        }
+
+        /* Apple Smooth Transition[cite: 2] */
+        .apple-transition {
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        .reveal-element {
+            opacity: 0;
+            transform: translate3d(0, 25px, 0);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+
+        .reveal-element.active {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+
+        button,
+        a {
+            min-width: 44px;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .no-min-target {
+            min-width: unset !important;
+            min-height: unset !important;
+        }
+
+        .catalog-scrollbar::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .catalog-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(26, 101, 158, 0.3);
+            border-radius: 2px;
+        }
+
+        @media (max-width: 1023px) {
+            #mainHeader {
+                left: 0 !important;
+                transform: none !important;
+                top: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                border-left: none !important;
+                border-right: none !important;
+                border-top: none !important;
+                border-radius: 0 !important;
+            }
+
+            #catalog {
+                gap: 1.5rem !important;
+            }
+        }
+
+        @media (max-width: 639px) {
+            #globalLoader .loader-shell {
+                padding: 0.75rem;
+            }
+
+            #globalLoader .loader-terminal {
+                padding: 0.75rem;
+                font-size: 9px;
+                overflow-wrap: break-word;
+                word-break: break-word;
+            }
+
+            #globalLoader .loader-terminal p {
+                line-height: 1.45;
+            }
+
+            #showcase .showcase-card {
+                width: 260px !important;
+            }
+
+            #cartDrawer {
+                max-width: 100% !important;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-appleGray text-charcoal font-sans antialiased overflow-x-hidden selection:bg-cyberNeonBlue selection:text-white relative min-w-0">
+
+    <div id="scanlines"></div>
+
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden max-w-full">
+        <div id="mouseGlow" class="absolute w-[600px] h-[600px] rounded-full ambient-glow -translate-x-1/2 -translate-y-1/2 transition-transform duration-300 ease-out opacity-80 will-change-transform"></div>
+        <div class="absolute top-1/4 -right-[20%] w-[800px] h-[800px] rounded-full ambient-glow opacity-30"></div>
+        <div class="absolute bottom-1/4 -left-[20%] w-[800px] h-[800px] rounded-full ambient-glow opacity-20"></div>
+    </div>
+
+    <!-- System Loader Layer -->
+    <div id="globalLoader" class="fixed inset-0 bg-appleGray z-[10000] flex flex-col justify-center items-center px-3 sm:px-6 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden">
+        <div class="loader-shell w-full max-w-md font-mono text-xs space-y-5 min-w-0">
+            <div class="flex justify-between items-center text-softSteelBlue tracking-wider gap-3 min-w-0">
+                <span class="font-display font-light text-xs sm:text-sm tracking-[0.25em] text-charcoal truncate">
+                    SNEAKSCLUBZA // ARCHIVE
+                </span>
+
+                <span id="loaderPercentage" class="text-cyberNeonBlue font-bold shrink-0">
+                    00%
+                </span>
+            </div>
+
+            <div class="w-full h-[2px] bg-black/5 relative overflow-hidden rounded-full">
+                <div id="loaderProgressBar" class="absolute top-0 left-0 h-full w-0 bg-gradient-to-r from-cyberNeonBlue to-cyberCyan transition-all duration-75"></div>
+            </div>
+
+            <div class="loader-terminal bg-white/40 backdrop-blur-md border border-white/50 p-4 text-[9px] sm:text-[10px] text-softSteelBlue leading-relaxed space-y-1 overflow-hidden rounded-lg shadow-sm">
+                <p class="text-cyberNeonBlue font-semibold uppercase tracking-wider break-words">
+                    &gt;_ INITIALIZING PREMIUM INTERACTION PARADIGMS
+                </p>
+
+                <div id="loaderLogs" class="space-y-1 break-words opacity-75">
+                    <p class="opacity-50">[LOG] SECURE GLASSMORPHIC PIPELINE DEPLOYED.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Announcement Bar -->
+    <div class="relative z-50 bg-charcoal text-white border-b border-black/5 py-3 text-center text-[8px] sm:text-[9px] font-mono uppercase tracking-superWide font-light px-4 break-words">
+        <span class="inline-block w-1.5 h-1.5 rounded-full bg-cyberCyan animate-pulse mr-2 shrink-0"></span>
+        COMPLIMENTARY EXPRESS DELIVERY WITHIN SOUTH AFRICA ON ALL ORDERS[cite: 2]
+    </div>
+
+    <!-- Premium Apple-Style Navigation Bar[cite: 2] -->
+    <header id="mainHeader" class="fixed top-6 lg:top-8 left-1/2 lg:-translate-x-1/2 w-full lg:w-[92%] max-w-[1700px] z-40 apple-transition px-6 sm:px-10 py-3 rounded-none lg:rounded-2xl glass-panel min-w-0">
+        <div class="flex justify-between items-center w-full gap-3 min-w-0">
+
+            <a href="#" class="font-display font-medium text-base sm:text-lg tracking-[0.2em] text-charcoal hover:opacity-75 transition-opacity whitespace-nowrap shrink-0">
+                SNEAKSCLUB<span class="text-cyberNeonBlue font-light">ZA</span>™
+            </a>
+
+            <nav class="hidden lg:flex items-center space-x-10 font-mono text-[10px] tracking-ultraWide font-light min-w-0">
+                <a href="#showcase" class="text-charcoal hover:text-cyberNeonBlue transition-colors duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-cyberNeonBlue hover:after:w-full after:transition-all">
+                    SHOWCASE
+                </a>
+
+                <a href="#catalog" class="text-charcoal hover:text-cyberNeonBlue transition-colors duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-cyberNeonBlue hover:after:w-full after:transition-all">
+                    CATALOGUE
+                </a>
+
+                <a href="#join" class="text-charcoal hover:text-cyberNeonBlue transition-colors duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-cyberNeonBlue hover:after:w-full after:transition-all">
+                    PORTAL
+                </a>
+
+                <a href="#footer" class="text-charcoal hover:text-cyberNeonBlue transition-colors duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-cyberNeonBlue hover:after:w-full after:transition-all">
+                    LOCATION
+                </a>
+            </nav>
+
+            <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+
+                <button id="searchOpenBtn" class="p-2.5 text-charcoal hover:text-cyberNeonBlue apple-transition rounded-full hover:bg-white/50 focus:outline-none" aria-label="Open Search">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+
+                <button id="accountModalBtn" class="p-2.5 text-charcoal hover:text-cyberNeonBlue apple-transition rounded-full hover:bg-white/50 focus:outline-none" aria-label="User Account">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                </button>
+
+                <button id="cartOpenBtn" class="p-2.5 text-charcoal hover:text-cyberNeonBlue apple-transition rounded-full hover:bg-white/50 relative focus:outline-none" aria-label="Open Cart">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                    </svg>
+
+                    <span id="cartCountBadge" class="absolute top-1 right-1 bg-cyberNeonBlue text-white text-[8px] font-mono font-bold w-4 h-4 rounded-full flex items-center justify-center transform scale-0 transition-transform duration-300">
+                        0
+                    </span>
+                </button>
+
+                <button id="mobileMenuToggle" class="lg:hidden p-2.5 text-charcoal hover:text-cyberNeonBlue apple-transition rounded-full hover:bg-white/50 focus:outline-none" aria-label="Toggle Mobile Menu">
+                    <svg id="menuIcon" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Native Blur Mobile Overlay Menu -->
+    <div id="mobileMenu" class="fixed inset-0 z-30 bg-white/80 backdrop-blur-3xl flex flex-col justify-between px-8 sm:px-12 py-32 sm:py-36 transform translate-x-full apple-transition overflow-y-auto min-w-0">
+        <nav class="flex flex-col space-y-6 sm:space-y-8 font-display text-2xl sm:text-3xl tracking-[0.15em] font-light text-left min-w-0">
+            <a href="#showcase" class="mobile-nav-link text-charcoal hover:text-cyberNeonBlue apple-transition break-words">
+                SHOWCASE
+            </a>
+
+            <a href="#catalog" class="mobile-nav-link text-charcoal hover:text-cyberNeonBlue apple-transition break-words">
+                CATALOGUE
+            </a>
+
+            <a href="#join" class="mobile-nav-link text-charcoal hover:text-cyberNeonBlue apple-transition break-words">
+                PORTAL
+            </a>
+
+            <a href="#footer" class="mobile-nav-link text-charcoal hover:text-cyberNeonBlue apple-transition break-words">
+                LOCATION
+            </a>
+        </nav>
+
+        <div class="border-t border-black/5 pt-8 text-[9px] font-mono uppercase tracking-widest text-softSteelBlue space-y-2 break-words">
+            <p>NETWORK NODE: ZA // REGIONAL HQ</p>
+            <p>© 2026 SNEAKSCLUBZA. ALL RIGHTS RESERVED.</p>
+        </div>
+    </div>
+
+    <main class="relative z-10 w-full min-w-0 overflow-hidden">
+
+        <!-- Hero Stage -->
+        <section class="min-h-[90vh] lg:min-h-screen w-full relative flex items-center justify-center overflow-hidden px-6 md:px-16 border-b border-black/5">
+            <div class="absolute inset-x-0 text-center select-none pointer-events-none z-0 px-2">
+                <h1 class="font-display font-bold text-[14vw] uppercase tracking-tighter leading-none text-stroke opacity-15 break-words">
+                    MINIMAL_LUX
+                </h1>
+            </div>
+
+            <div class="max-w-[1600px] w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center z-10 pt-36 md:pt-40 lg:pt-32 pb-20 min-w-0">
+
+                <div class="lg:col-span-5 space-y-8 text-left order-2 lg:order-1 min-w-0">
+                    <div class="hero-telemetry flex flex-col space-y-2 border-l-2 border-cyberNeonBlue pl-5 font-mono text-[9px] text-softSteelBlue tracking-widest min-w-0">
+                        <p class="break-words">
+                            PROJECT LOG // <span class="text-charcoal font-semibold">SCZA-2026</span>
+                        </p>
+
+                        <p class="break-words">
+                            STATUS // <span class="text-cyberCyan font-semibold">ACTIVE DEPLOYMENT</span>
+                        </p>
+                    </div>
+
+                    <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-light uppercase tracking-tight text-charcoal leading-none break-words">
+                        THE<br>
+                        <span class="font-sans font-extralight italic text-stroke text-charcoal">
+                            SNEAKER CLUB
+                        </span>
+                    </h2>
+
+                    <p class="text-xs sm:text-sm text-softSteelBlue font-light tracking-wide leading-relaxed max-w-sm">
+                        The modern digital footprint archival matrix. Designed for premium techwear enthusiasts, sneaker purists, and global curators.[cite: 2]
+                    </p>
+
+                    <div class="pt-6 flex flex-wrap gap-4 min-w-0">
+
+                        <a href="#catalog" class="px-8 py-4 bg-charcoal text-white text-[10px] font-mono uppercase tracking-superWide font-bold hover:bg-cyberNeonBlue apple-transition shadow-lg hover:shadow-2xl text-center">
+                            EXPLORE CATALOGUE
+                        </a>
+
+                        <a href="#showcase" class="px-8 py-4 bg-white/60 border border-white/85 text-charcoal text-[10px] font-mono uppercase tracking-superWide font-bold hover:bg-white/90 apple-transition shadow-sm hover:shadow-md text-center">
+                            VIEW SHOWCASE
+                        </a>
+
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3 hidden lg:flex flex-col space-y-8 text-right text-[10px] tracking-superWide text-softSteelBlue font-mono order-3 border-r border-black/5 pr-8 min-w-0">
+                    <div>
+                        <p class="text-charcoal font-semibold">REGION:</p>
+                        <p class="text-cyberNeonBlue break-words">ZA // LOCAL HUB</p>
+                    </div>
+
+                    <div>
+                        <p class="text-charcoal font-semibold">COORDINATES:</p>
+                        <p class="text-softSteelBlue break-words">25.7479° S, 28.2293° E</p>
+                    </div>
+                </div>
+
+                 <div id="heroRenderContainer" class="lg:col-span-4 flex justify-center items-center order-1 lg:order-2 relative h-[280px] sm:h-[340px] md:h-[480px] lg:h-[550px] min-w-0 overflow-hidden rounded-2xl bg-white/20 backdrop-blur-md border border-white/40 shadow-inner">
+                    <div class="absolute w-[80%] h-[80%] bg-gradient-to-tr from-cyberNeonBlue/5 to-transparent rounded-full blur-3xl opacity-50 animate-pulse"></div>
+
+                    <img
+                        src="WhatsApp Image 2026-05-27 at 00.36.25.jpeg"
+                        alt="SneaksClubZA Hero Showcase Asset"
+                        class="w-[85%] h-[85%] object-contain object-center filter drop-shadow-[0_25px_30px_rgba(0,0,0,0.06)] hover:scale-105 apple-transition will-change-transform"
+                        onerror="this.style.opacity='0.5';"
+                    >
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Gallery Showcase (Horizontal Scrolling Lookbook) -->
+        <section id="showcase" class="py-24 md:py-32 bg-appleGray overflow-hidden border-b border-black/5">
+            <div class="max-w-[1700px] mx-auto px-6 md:px-12 min-w-0">
+
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 min-w-0">
+                    <div class="space-y-3 min-w-0">
+                        <p class="text-cyberNeonBlue font-mono text-[10px] tracking-superWide uppercase font-bold break-words">
+                            LIMITED PRODUCT ITERATIONS
+                        </p>
+
+                        <h3 class="font-display text-3xl md:text-4xl font-light tracking-tight uppercase text-charcoal break-words">
+                            THE ARCHIVAL COLLECTIVE
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="flex overflow-x-auto overflow-y-hidden gap-6 sm:gap-8 pb-8 snap-x snap-mandatory select-none px-2 sm:px-6 -mx-2 sm:-mx-6 scroll-smooth catalog-scrollbar min-w-0">
+
+                    <!-- Showcase Card 1 -->
+                    <div class="showcase-card flex-none w-[290px] sm:w-[320px] md:w-[420px] glass-premium p-5 sm:p-7 snap-start space-y-5 group hover:-translate-y-1.5 hover:shadow-2xl apple-transition min-w-0">
+                        <div class="h-60 sm:h-72 bg-[#F8F9FA] relative overflow-hidden flex items-center justify-center min-w-0 rounded-xl shadow-inner border border-black/[0.03]">
+                            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0%,transparent_100%)]"></div>
+                            <img src="1.jpeg" alt="Nike P-6000" class="w-[80%] h-[80%] object-contain group-hover:scale-105 apple-transition will-change-transform z-10">
+                        </div>
+
+                        <div class="flex justify-between items-start gap-4 pt-2 min-w-0">
+                            <div class="min-w-0">
+                                <h4 class="font-mono text-xs font-bold text-charcoal tracking-wide break-words">
+                                    NIKE P 6000
+                                </h4>
+
+                                <p class="font-mono text-[9px] text-softSteelBlue tracking-wider mt-1 break-words">
+                                    COLORWAY // RED / BLACK
+                                </p>
+                            </div>
+
+                            <span class="font-mono text-xs font-semibold text-cyberNeonBlue whitespace-nowrap shrink-0">
+                                R1,400
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Showcase Card 2 -->
+                    <div class="showcase-card flex-none w-[290px] sm:w-[320px] md:w-[420px] glass-premium p-5 sm:p-7 snap-start space-y-5 group hover:-translate-y-1.5 hover:shadow-2xl apple-transition min-w-0">
+                        <div class="h-60 sm:h-72 bg-[#F8F9FA] relative overflow-hidden flex items-center justify-center min-w-0 rounded-xl shadow-inner border border-black/[0.03]">
+                            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0%,transparent_100%)]"></div>
+                            <img src="2.jpeg" alt="New Balance 9060" class="w-[80%] h-[80%] object-contain group-hover:scale-105 apple-transition will-change-transform z-10">
+                        </div>
+
+                        <div class="flex justify-between items-start gap-4 pt-2 min-w-0">
+                            <div class="min-w-0">
+                                <h4 class="font-mono text-xs font-bold text-charcoal tracking-wide break-words">
+                                    NEW BALANCE 9060
+                                </h4>
+
+                                <p class="font-mono text-[9px] text-softSteelBlue tracking-wider mt-1 break-words">
+                                    COLORWAY // GREY / BLACK
+                                </p>
+                            </div>
+
+                            <span class="font-mono text-xs font-semibold text-cyberNeonBlue whitespace-nowrap shrink-0">
+                                R2,400
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Showcase Card 3 -->
+                    <div class="showcase-card flex-none w-[290px] sm:w-[320px] md:w-[420px] glass-premium p-5 sm:p-7 snap-start space-y-5 group hover:-translate-y-1.5 hover:shadow-2xl apple-transition min-w-0">
+                        <div class="h-60 sm:h-72 bg-[#F8F9FA] relative overflow-hidden flex items-center justify-center min-w-0 rounded-xl shadow-inner border border-black/[0.03]">
+                            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0%,transparent_100%)]"></div>
+                            <img src="3.jpeg" alt="Nike Air Max 90" class="w-[80%] h-[80%] object-contain group-hover:scale-105 apple-transition will-change-transform z-10">
+                        </div>
+
+                        <div class="flex justify-between items-start gap-4 pt-2 min-w-0">
+                            <div class="min-w-0">
+                                <h4 class="font-mono text-xs font-bold text-charcoal tracking-wide break-words">
+                                    NIKE AIRMAX 90
+                                </h4>
+
+                                <p class="font-mono text-[9px] text-softSteelBlue tracking-wider mt-1 break-words">
+                                    COLORWAY // WHITE
+                                </p>
+                            </div>
+
+                            <span class="font-mono text-xs font-semibold text-cyberNeonBlue whitespace-nowrap shrink-0">
+                                R2,300
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Showcase Card 4 -->
+                    <div class="showcase-card flex-none w-[290px] sm:w-[320px] md:w-[420px] glass-premium p-5 sm:p-7 snap-start space-y-5 group hover:-translate-y-1.5 hover:shadow-2xl apple-transition min-w-0">
+                        <div class="h-60 sm:h-72 bg-[#F8F9FA] relative overflow-hidden flex items-center justify-center min-w-0 rounded-xl shadow-inner border border-black/[0.03]">
+                            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0%,transparent_100%)]"></div>
+                            <img src="4.jpeg" alt="New Balance 740" class="w-[80%] h-[80%] object-contain group-hover:scale-105 apple-transition will-change-transform z-10">
+                        </div>
+
+                        <div class="flex justify-between items-start gap-4 pt-2 min-w-0">
+                            <div class="min-w-0">
+                                <h4 class="font-mono text-xs font-bold text-charcoal tracking-wide break-words">
+                                    NEW BALANCE 740
+                                </h4>
+
+                                <p class="font-mono text-[9px] text-softSteelBlue tracking-wider mt-1 break-words">
+                                    COLORWAY // WHITE / GREEN
+                                </p>
+                            </div>
+
+                            <span class="font-mono text-xs font-semibold text-cyberNeonBlue whitespace-nowrap shrink-0">
+                                R1,800
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Product Catalogue (Interactive System Grid) -->
+        <section id="catalog" class="py-24 md:py-32 max-w-[1700px] mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 min-w-0">
+
+            <!-- Sidebar Filters -->
+            <aside class="lg:col-span-3 space-y-8 lg:sticky lg:top-36 h-fit bg-white/40 backdrop-blur-xl p-6 sm:p-8 border border-white/60 shadow-sm rounded-2xl min-w-0 overflow-hidden">
+
+                <div class="flex justify-between items-center gap-3 pb-5 border-b border-black/5 min-w-0">
+                    <h3 class="font-display text-sm font-bold tracking-wider text-charcoal uppercase shrink-0">
+                        FILTERS
+                    </h3>
+
+                    <span id="productCountTelemetry" class="font-mono text-[9px] bg-cyberNeonBlue/10 text-cyberNeonBlue px-2.5 py-1 rounded border border-cyberNeonBlue/15 font-semibold break-words text-right">
+                        0 ITEMS MATCHED
+                    </span>
+                </div>
+
+                <div class="space-y-3 min-w-0">
+                    <label class="block font-mono text-[9px] text-softSteelBlue uppercase tracking-wider font-semibold">SEARCH</label>
+                    <input
+                        id="catalogSearchInput"
+                        type="text"
+                        placeholder="Search products..."
+                        class="w-full min-w-0 bg-white/80 text-charcoal text-[11px] p-3.5 border border-black/5 focus:outline-none focus:ring-1 focus:ring-cyberNeonBlue rounded-xl font-mono"
+                    >
+                </div>
+
+                <div class="space-y-3 min-w-0">
+                    <label class="block font-mono text-[9px] text-softSteelBlue uppercase tracking-wider font-semibold">CATEGORY</label>
+                    <div class="space-y-1.5">
+                        <button data-category="ALL" class="filter-cat-btn flex justify-between items-center gap-3 text-cyberNeonBlue font-bold text-left py-2.5 px-4 border-l-2 border-cyberNeonBlue bg-black/5 transition-all no-min-target whitespace-nowrap shrink-0 w-full text-[10px] font-mono rounded-r-lg">
+                            ALL PRODUCTS
+                        </button>
+                        <button data-category="FOOTWEAR" class="filter-cat-btn flex justify-between items-center gap-3 text-black/60 hover:text-charcoal text-left py-2.5 px-4 border-l-2 border-transparent transition-all no-min-target whitespace-nowrap shrink-0 w-full text-[10px] font-mono rounded-r-lg">
+                            FOOTWEAR
+                        </button>
+                        <button data-category="APPAREL" class="filter-cat-btn flex justify-between items-center gap-3 text-black/60 hover:text-charcoal text-left py-2.5 px-4 border-l-2 border-transparent transition-all no-min-target whitespace-nowrap shrink-0 w-full text-[10px] font-mono rounded-r-lg">
+                            APPAREL
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-3 min-w-0">
+                    <label class="block font-mono text-[9px] text-softSteelBlue uppercase tracking-wider font-semibold">GENDER</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button data-gender="ALL" class="filter-gender-btn py-3 border border-cyberNeonBlue bg-cyberNeonBlue/5 text-cyberNeonBlue font-bold transition-colors no-min-target min-w-0 break-words text-[9px] font-mono text-center rounded-xl">
+                            ALL
+                        </button>
+                        <button data-gender="MALE" class="filter-gender-btn py-3 border border-black/5 bg-white/50 hover:border-black/20 text-black/60 transition-colors no-min-target min-w-0 break-words text-[9px] font-mono text-center rounded-xl">
+                            MALE
+                        </button>
+                        <button data-gender="FEMALE" class="filter-gender-btn py-3 border border-black/5 bg-white/50 hover:border-black/20 text-black/60 transition-colors no-min-target min-w-0 break-words text-[9px] font-mono text-center rounded-xl">
+                            FEMALE
+                        </button>
+                        <button data-gender="UNISEX" class="filter-gender-btn py-3 border border-black/5 bg-white/50 hover:border-black/20 text-black/60 transition-colors no-min-target min-w-0 break-words text-[9px] font-mono text-center rounded-xl">
+                            UNISEX
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-3 min-w-0">
+                    <div class="flex justify-between items-center">
+                        <label class="block font-mono text-[9px] text-softSteelBlue uppercase tracking-wider font-semibold">MAX PRICE</label>
+                        <span id="priceMaxTextIndicator" class="font-mono text-[10px] text-cyberNeonBlue font-bold">R12,500</span>
+                    </div>
+                    <input
+                        id="priceSliderRange"
+                        type="range"
+                        min="500"
+                        max="12500"
+                        value="12500"
+                        step="100"
+                        class="w-full accent-cyberNeonBlue bg-black/5 h-1 rounded-lg"
+                    >
+                </div>
+
+                <div class="space-y-3 min-w-0">
+                    <label class="block font-mono text-[9px] text-softSteelBlue uppercase tracking-wider font-semibold">SORT BY</label>
+                    <select
+                        id="catalogSortSelector"
+                        class="w-full min-w-0 bg-white/80 text-charcoal text-[11px] p-3.5 border border-black/5 focus:outline-none focus:ring-1 focus:ring-cyberNeonBlue rounded-xl font-mono"
+                    >
+                        <option value="DEFAULT">DEFAULT</option>
+                        <option value="PRICE_ASC">PRICE: LOW TO HIGH</option>
+                        <option value="PRICE_DESC">PRICE: HIGH TO LOW</option>
+                    </select>
+                </div>
+
+            </aside>
+
+            <!-- Product Grid Matrix Area -->
+            <div class="lg:col-span-9 min-w-0">
+                <div id="catalogGridMatrix" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8 min-w-0">
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Premium Sign-up / CTA Segment -->
+        <section id="join" class="py-28 md:py-36 bg-appleGray border-t border-b border-black/5 text-center relative overflow-hidden px-4 min-w-0">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(26,101,158,0.03)_0%,transparent_70%)]"></div>
+
+            <div class="max-w-3xl mx-auto space-y-8 relative z-10 min-w-0">
+
+                <p class="text-cyberNeonBlue font-mono text-xs tracking-superWide uppercase font-bold break-words">
+                    MEMBER REGISTRATION
+                </p>
+
+                <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-light uppercase tracking-tighter leading-none text-charcoal break-words">
+                    JOIN THE EXCLUSIVE MEMBERSHIP
+                </h2>
+
+                <p class="text-xs md:text-sm text-softSteelBlue tracking-wide font-light max-w-lg mx-auto leading-relaxed break-words">
+                    Register your profile to access early product launches, member-only drops, and global priority order tracking updates.[cite: 2]
+                </p>
+
+                <div class="pt-6">
+                    <button id="ctaTriggerPortalBtn" class="px-10 py-5 bg-charcoal text-white font-mono text-[11px] uppercase tracking-superWide font-bold hover:bg-cyberNeonBlue apple-transition shadow-lg hover:shadow-xl text-center">
+                        CREATE AN ACCOUNT NOW
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Global Footer Module -->
+    <footer id="footer" class="bg-white text-softSteelBlue font-mono text-[11px] tracking-wider py-20 px-6 md:px-12 border-t border-black/5 relative z-20 shadow-inner overflow-hidden min-w-0">
+        <div class="max-w-[1700px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 mb-20 min-w-0">
+
+            <div class="space-y-5 min-w-0">
+                <h5 class="text-charcoal font-semibold uppercase tracking-widest text-[12px] break-words">
+                    DIRECTORY
+                </h5>
+
+                <ul class="space-y-2.5 text-[10px] min-w-0">
+                    <li>
+                        <a href="#showcase" class="hover:text-cyberNeonBlue transition-colors break-words">
+                            ARCHIVAL SHOWCASE
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#catalog" class="hover:text-cyberNeonBlue transition-colors break-words">
+                            PRODUCT CATALOGUE
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#join" class="hover:text-cyberNeonBlue transition-colors break-words">
+                            PORTAL REGISTRATION
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="space-y-5 min-w-0">
+                <h5 class="text-charcoal font-semibold uppercase tracking-widest text-[12px] break-words">
+                    LEGAL LOGS
+                </h5>
+
+                <ul class="space-y-2.5 text-[10px] min-w-0">
+                    <li>
+                        <a href="#" class="hover:text-cyberNeonBlue transition-colors break-words">
+                            PRIVACY POLICY
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="hover:text-cyberNeonBlue transition-colors break-words">
+                            TERMS OF DEPLOYMENT
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="hover:text-cyberNeonBlue transition-colors break-words">
+                            SOUTH AFRICA CPA INTEGRITY
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="space-y-5 min-w-0">
+                <h5 class="text-charcoal font-semibold uppercase tracking-widest text-[12px] break-words">
+                    CHANNELS
+                </h5>
+
+                <ul class="space-y-2.5 text-[10px] min-w-0">
+                    <li>
+                        <a href="#" class="hover:text-cyberNeonBlue transition-colors break-words">
+                            SECURE COMMUNICATIONS
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="hover:text-cyberNeonBlue transition-colors break-words">
+                            LAB CHAT ENVIRONMENT
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="hover:text-cyberNeonBlue transition-colors break-words">
+                            INSTAGRAM PLATFORM
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="space-y-5 sm:col-span-2 min-w-0">
+                <h5 class="text-charcoal font-semibold uppercase tracking-widest text-[12px] break-words">
+                    REGIONAL HUB NODE
+                </h5>
+
+                <p class="text-[10px] text-black/50 leading-relaxed font-sans normal-case tracking-normal max-w-xs break-words">
+                    SNEAKSCLUBZA REPOSITORY BASE: INDUSTRIAL CLUSTER SEGMENT, PRETORIA / JOHANNESBURG SEGMENT, SOUTH AFRICA.
+                </p>
+
+                <div class="mt-3 text-cyberNeonBlue font-semibold text-[10px] break-words">
+                    SYS_PING //
+                    <span id="footerNetworkPing">
+                        0.015ms SECURE DELIVERY DISPATCH CHANNELS DISPATCH ACTIVE
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="max-w-[1700px] mx-auto border-t border-black/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] min-w-0">
+            <p class="break-words text-center md:text-left">
+                © 2026 SNEAKSCLUBZA™ SYSTEM REPOSITORY INTEGRITY APP. ALL RIGHTS RETAINED.
+            </p>
+
+            <p class="text-black/30 text-center md:text-right uppercase tracking-widest break-words">
+                DESIGNED BY UI_FUTURIST LABS x ARCHIVAL ENG CORE
+            </p>
+        </div>
+    </footer>
+
+    <!-- Native Blur Cart Slider Overlay[cite: 2] -->
+    <div id="cartDrawer" class="fixed inset-y-0 right-0 w-full sm:max-w-md bg-white/80 backdrop-blur-3xl z-50 transform translate-x-full apple-transition border-l border-white/50 flex flex-col justify-between shadow-2xl overflow-hidden min-w-0">
+
+        <div class="p-6 border-b border-black/5 flex justify-between items-center gap-4 bg-white/20 min-w-0">
+
+            <div class="space-y-1.5 min-w-0">
+                <h4 class="font-display text-sm font-bold tracking-widest text-charcoal uppercase break-words">
+                    TRANSACTION LEDGER
+                </h4>
+
+                <p class="font-mono text-[9px] text-cyberNeonBlue uppercase tracking-widest font-bold break-words">
+                    SECURE GATEWAY ROUTE
+                </p>
+            </div>
+
+            <button id="cartCloseBtn" class="text-black/60 hover:text-charcoal font-mono text-[10px] tracking-wider border border-black/5 px-4 py-2 bg-white/85 rounded-xl hover:bg-white apple-transition shrink-0" aria-label="Close Cart">
+                [CLOSE_X]
+            </button>
+
+        </div>
+
+        <div id="cartItemsContainer" class="flex-1 overflow-y-auto overflow-x-hidden p-6 space-y-4 division-y divide-black/5 min-w-0">
+
+            <div class="text-center py-12 text-black/30 font-mono text-xs space-y-3">
+                <svg class="w-8 h-8 mx-auto text-black/10 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                </svg>
+
+                <p class="break-words">
+                    YOUR SELECTION SUMMARY IS VACANT.
+                </p>
+            </div>
+
+        </div>
+
+        <div id="cartSummarySection" class="p-6 border-t border-black/5 bg-white/30 backdrop-blur-lg font-mono space-y-5 min-w-0">
+
+            <div class="space-y-3 text-xs min-w-0">
+
+                <div class="flex justify-between items-center gap-3 text-black/60 min-w-0">
+                    <span class="break-words">
+                        PRODUCT SUB-TOTAL VALUE:
+                    </span>
+
+                    <span id="cartSubtotalText" class="text-charcoal font-bold shrink-0">
+                        R0.00
+                    </span>
+                </div>
+
+                <div class="flex justify-between items-center gap-3 text-[10px] text-black/40 min-w-0">
+                    <span class="break-words">
+                        ESTIMATED SOUTH AFRICA VAT (15% RATIO):
+                    </span>
+
+                    <span id="cartTaxText" class="shrink-0">
+                        R0.00
+                    </span>
+                </div>
+
+                <div class="flex justify-between items-center gap-3 text-[10px] text-cyberNeonBlue font-bold min-w-0">
+                    <span class="break-words">
+                        SHIPPING DELIVERY DISPATCH METHOD:
+                    </span>
+
+                    <span class="shrink-0">
+                        COMPLIMENTARY_TRACKING
+                    </span>
+                </div>
+
+                <div class="flex justify-between items-center gap-3 text-sm text-charcoal font-bold min-w-0 border-t border-black/5 pt-3">
+                    <span class="break-words">
+                        TOTAL:
+                    </span>
+
+                    <span id="cartTotalText" class="text-cyberNeonBlue shrink-0">
+                        R0.00
+                    </span>
+                </div>
+
+            </div>
+
+            <!-- Checkout Form -->
+            <form id="checkoutForm" class="space-y-4 text-xs min-w-0 border-t border-black/5 pt-5">
+                <p class="font-mono text-[10px] text-softSteelBlue uppercase tracking-widest font-bold break-words">
+                    CHECKOUT DETAILS
+                </p>
+
+                <div class="space-y-1.5 min-w-0">
+                    <label class="block text-[10px] text-softSteelBlue uppercase font-bold break-words">FULL NAME</label>
+                    <input type="text" id="checkoutName" required placeholder="Enter your full name" class="w-full min-w-0 bg-white/70 text-charcoal p-3.5 border border-black/5 focus:outline-none focus:ring-1 focus:ring-cyberNeonBlue rounded-xl font-mono text-[11px]">
+                </div>
+
+                <div class="space-y-1.5 min-w-0">
+                    <label class="block text-[10px] text-softSteelBlue uppercase font-bold break-words">WHATSAPP NUMBER</label>
+                    <input type="tel" id="checkoutPhone" required placeholder="+27..." class="w-full min-w-0 bg-white/70 text-charcoal p-3.5 border border-black/5 focus:outline-none focus:ring-1 focus:ring-cyberNeonBlue rounded-xl font-mono text-[11px]">
+                </div>
+
+                <div class="space-y-1.5 min-w-0">
+                    <label class="block text-[10px] text-softSteelBlue uppercase font-bold break-words">DELIVERY ADDRESS</label>
+                    <input type="text" id="checkoutAddress" required placeholder="Street address, city" class="w-full min-w-0 bg-white/70 text-charcoal p-3.5 border border-black/5 focus:outline-none focus:ring-1 focus:ring-cyberNeonBlue rounded-xl font-mono text-[11px]">
+                </div>
+
+                <div class="space-y-1.5 min-w-0">
+                    <label class="block text-[10px] text-softSteelBlue uppercase font-bold break-words">DELIVERY TIMING</label>
+                    <select id="checkoutDelivery" required class="w-full min-w-0 bg-white/70 text-charcoal p-3.5 border border-black/5 focus:outline-none focus:ring-1 focus:ring-cyberNeonBlue rounded-xl font-mono text-[11px]">
+                        <option value="Earliest available">Earliest available</option>
+                        <option value="Today if available">Today if available</option>
+                        <option value="Tomorrow">Tomorrow</option>
+                        <option value="Confirm with seller">Confirm with seller</option>
+                    </select>
+                </div>
+
+                <div class="space-y-1.5 min-w-0">
+                    <label class="block text-[10px] text-softSteelBlue uppercase font-bold break-words">NOTES (OPTIONAL)</label>
+                    <textarea id="checkoutNotes" rows="2" placeholder="Size preference, landmark, etc." class="w-full min-w-0 bg-white/70 text-charcoal p-3.5 border border-black/5 focus:outline-none focus:ring-1 focus:ring-cyberNeonBlue rounded-xl font-mono text-[11px]"></textarea>
+                </div>
+
+                <label class="flex items-start gap-2 text-[10px] text-black/50 min-w-0 cursor-pointer">
+                    <input type="checkbox" id="checkoutTerms" required class="mt-1 accent-cyberNeonBlue rounded">
+                    <span class="break-words">I agree to terms and confirm I am 18+</span>
+                </label>
+
+                <button type="submit" id="checkoutSubmitBtn" class="w-full py-4.5 bg-cyberNeonBlue text-white text-[11px] font-bold tracking-superWide uppercase hover:bg-charcoal apple-transition shadow-md text-center rounded-xl">
+                    PLACE ORDER & VIEW BANK DETAILS
+                </button>
+            </form>
+
+            <!-- Bank Details (hidden initially) -->
+            <div id="bankDetailsSection" class="hidden space-y-4 border-t border-black/5 pt-5">
+                <div class="bg-white border border-black/5 p-5 rounded-2xl space-y-3">
+                    <div class="flex items-center gap-3 pb-3 border-b border-black/5">
+                        <div class="w-8 h-8 bg-blue-600 flex items-center justify-center text-white font-bold text-[10px] rounded-lg">SB</div>
+                        <div>
+                            <p class="font-mono text-[10px] font-bold text-charcoal">STANDARD BANK</p>
+                            <p class="font-mono text-[8px] text-black/40">SECURE TRANSFER</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center gap-2">
+                            <span class="font-mono text-[10px] text-black/50">ACCOUNT HOLDER:</span>
+                            <span class="font-mono text-[10px] text-charcoal font-bold break-words">MR NTSAKO MALULEKE</span>
+                        </div>
+
+                        <div class="flex justify-between items-center gap-2">
+                            <span class="font-mono text-[10px] text-black/50">ACCOUNT NUMBER:</span>
+                            <div class="flex items-center gap-1.5">
+                                <span id="bankAccountNumber" class="font-mono text-[11px] text-cyberNeonBlue font-bold">10152903362</span>
+                                <button type="button" onclick="window.SneaksClubGlobalAppInstance.copyToClipboard('10152903362', 'Account number')" class="text-[8px] bg-cyberNeonBlue/10 text-cyberNeonBlue px-2 py-0.5 font-mono font-bold hover:bg-cyberNeonBlue hover:text-white rounded transition-colors">COPY</button>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center gap-2">
+                            <span class="font-mono text-[10px] text-black/50">BRANCH CODE:</span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-mono text-[11px] text-charcoal">051001</span>
+                                <button type="button" onclick="window.SneaksClubGlobalAppInstance.copyToClipboard('051001', 'Branch code')" class="text-[8px] bg-cyberNeonBlue/10 text-cyberNeonBlue px-2 py-0.5 font-mono font-bold hover:bg-cyberNeonBlue hover:text-white rounded transition-colors">COPY</button>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center gap-2">
+                            <span class="font-mono text-[10px] text-black/50">REFERENCE:</span>
+                            <div class="flex items-center gap-1.5">
+                                <span id="orderReferenceDisplay" class="font-mono text-[11px] text-cyberCyan font-bold">-</span>
+                                <button type="button" id="copyRefBtn" class="text-[8px] bg-cyberCyan/10 text-cyberCyan px-2 py-0.5 font-mono font-bold hover:bg-cyberCyan hover:text-white rounded transition-colors">COPY</button>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center gap-2 border-t border-black/5 pt-2">
+                            <span class="font-mono text-[10px] text-black/50">AMOUNT:</span>
+                            <span id="orderAmountDisplay" class="font-mono text-sm text-charcoal font-bold">R0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-cyberNeonBlue/5 border border-cyberNeonBlue/20 p-4 rounded-xl">
+                    <p class="font-mono text-[9px] text-cyberNeonBlue uppercase tracking-wider font-bold mb-1">IMPORTANT INSTRUCTIONS</p>
+                    <ul class="font-mono text-[9px] text-black/60 space-y-1">
+                        <li>• Use the order number as your payment reference</li>
+                        <li>• Payment must reflect before order is shipped</li>
+                        <li>• Send proof of payment via WhatsApp after paying</li>
+                    </ul>
+                </div>
+
+                <div class="flex gap-2">
+                    <button id="sendOrderWhatsAppBtn" class="flex-1 py-3.5 bg-green-500 text-white text-[10px] font-mono font-bold tracking-wider uppercase hover:bg-green-600 rounded-xl transition-colors text-center">
+                        SEND ORDER VIA WHATSAPP
+                    </button>
+                    <button id="sendProofWhatsAppBtn" class="flex-1 py-3.5 bg-cyberNeonBlue text-white text-[10px] font-mono font-bold tracking-wider uppercase hover:bg-charcoal rounded-xl transition-colors text-center">
+                        I'VE PAID - SEND PROOF
+                    </button>
+                </div>
+
+                <button id="returnToShopBtn" class="w-full py-3.5 bg-transparent border border-black/10 text-black/50 text-[10px] font-mono font-bold tracking-wider uppercase hover:bg-black/5 rounded-xl transition-colors text-center">
+                    RETURN TO SHOP
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- System Toast Overlay -->
+    <div id="sneaksclubToast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-charcoal text-white px-6 py-4 rounded-xl font-mono text-xs tracking-wider z-[9999] apple-transition opacity-0 translate-y-4 pointer-events-none shadow-2xl border border-white/10">
+        <span id="toastMessage">-</span>
+    </div>
+
+    <!-- Search Modal Console Console Overlay[cite: 2] -->
+    <div id="searchConsoleModal" class="fixed inset-0 bg-charcoal/30 backdrop-blur-3xl z-[100] flex justify-center items-start pt-[12vh] sm:pt-[15vh] px-4 opacity-0 pointer-events-none apple-transition overflow-y-auto min-w-0">
+
+        <div class="bg-white/90 backdrop-blur-2xl w-full max-w-2xl border border-white/50 shadow-2xl p-6 sm:p-8 rounded-2xl font-mono space-y-5 transform scale-95 transition-transform duration-400 min-w-0 overflow-hidden">
+
+            <div class="flex justify-between items-center gap-4 pb-3 border-b border-black/5 min-w-0">
+
+                <span class="text-xs text-softSteelBlue uppercase tracking-wider font-semibold break-words">
+                    CROSS-INDEX EXPLORER ENGINE
+                </span>
+
+                <button id="searchConsoleCloseBtn" class="text-xs text-black/40 hover:text-charcoal px-3 py-1.5 border border-black/5 rounded-xl bg-white/80 apple-transition shrink-0">
+                    [ESC]
+                </button>
+
+            </div>
+
+            <div class="relative min-w-0">
+                <input
+                    id="modalSearchInputBox"
+                    type="text"
+                    placeholder="TYPE ANYTHING TO FILTER CENTRAL SPECS..."
+                    class="w-full min-w-0 bg-white/70 text-charcoal text-sm p-4 border border-black/5 focus:outline-none focus:ring-1 focus:ring-cyberNeonBlue rounded-xl placeholder:text-black/20"
+                >
+            </div>
+
+            <div class="text-[10px] text-black/40 uppercase tracking-wide leading-relaxed break-words">
+                Tip: Pressing alphanumeric sequences outputs directly to matches within the runtime product grid catalog array structure.
+            </div>
+
+        </div>
+    </div>
+
+    <!-- User Authentication Modal Console Overlay[cite: 2] -->
+    <div id="userIdentificationModal" class="fixed inset-0 bg-charcoal/30 backdrop-blur-3xl z-[100] flex justify-center items-center px-4 opacity-0 pointer-events-none apple-transition overflow-y-auto min-w-0">
+
+        <div class="bg-white/95 backdrop-blur-2xl w-full max-w-md border border-white/50 shadow-2xl p-6 sm:p-8 rounded-2xl font-mono space-y-6 min-w-0 overflow-hidden">
+
+            <div class="flex justify-between items-center gap-4 pb-3 border-b border-black/5 min-w-0">
+
+                <span class="text-xs text-softSteelBlue uppercase tracking-wider font-semibold break-words">
+                    SECURE CREDENTIAL VALIDATION
+                </span>
+
+                <button id="userModalCloseBtn" class="text-xs text-black/40 hover:text-charcoal px-3 py-1.5 border border-black/5 rounded-xl bg-white/80 apple-transition shrink-0">
+                    [CLOSE_X]
+                </button>
+
+            </div>
+
+            <form id="portalAuthFormStructure" class="space-y-5 text-xs min-w-0">
+
+                <div class="space-y-1.5 min-w-0">
+                    <label class="block text-[10px] text-softSteelBlue uppercase font-bold break-words">
+                        ENTER NETWORK IDENTITY EMAIL
+                    </label>
+
+                    <input
+                        type="email"
+                        required
+                        placeholder="operator@sneaksclub.co.za"
+                        class="w-full min-w-0 bg-white/70 text-charcoal p-3.5 border border-black/5 focus:outline-none focus:ring-1 focus:ring-cyberNeonBlue rounded-xl"
+                    >
+                </div>
+
+                <div class="space-y-1.5 min-w-0">
+                    <label class="block text-[10px] text-softSteelBlue uppercase font-bold break-words">
+                        ACCESS PASSPHRASE SECURE
+                    </label>
+
+                    <input
+                        type="password"
+                        required
+                        placeholder="••••••••••••"
+                        class="w-full min-w-0 bg-white/70 text-charcoal p-3.5 border border-black/5 focus:outline-none focus:ring-1 focus:ring-cyberNeonBlue rounded-xl"
+                    >
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-4 bg-charcoal text-white font-bold tracking-wider uppercase hover:bg-cyberNeonBlue apple-transition rounded-xl">
+                        AUTHORIZE CREDENTIAL ACCESS
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Core Runtime Platform Engine Application -->
+    <script>
+        (function() {
+            'use strict';
+
+            const BANK_CONFIG = {
+                bankName: 'Standard Bank',
+                accountHolder: 'MR NTSAKO MALULEKE',
+                accountNumber: '10152903362',
+                branchCode: '051001',
+                whatsappNumber: '27726522465'
+            };
+
+            const SCALABLE_PRODUCT_REPOSITORY = [
+                { id: "SCZA-NEO-08", name: "NIKE P 6000", price: 1400, category: "FOOTWEAR", gender: "UNISEX", color: "BLACK / WHITE", rating: 4.3, image: "1.jpeg" },
+                { id: "SCZA-HSD1-01", name: "AIR FORCE 1", price: 2000, category: "FOOTWEAR", gender: "MALE", color: "White", rating: 4.8, image: "5.jpeg" },
+                { id: "SCZA-MS7-02", name: "NIKE AIRMAX PORTAL", price: 1900, category: "FOOTWEAR", gender: "UNISEX", color: "CREAM WHITE", rating: 4.9, image: "6.jpeg" },
+                { id: "SCZA-QRA-03", name: "VANS HYLANE SHOE", price: 900, category: "FOOTWEAR", gender: "UNISEX", color: "BROWN", rating: 4.7, image: "7.jpeg" },
+                { id: "SCZA-TVL-04", name: "AIR JORDAN 1 MID", price: 1800, category: "FOOTWEAR", gender: "FEMALE", color: "BLUE / BLACK", rating: 4.5, image: "8.jpeg" },
+                { id: "SCZA-EXO-05", name: "NIKE AIRMAX 1", price: 2100, category: "FOOTWEAR", gender: "MALE", color: "GREY / BLACK", rating: 4.6, image: "21.jpeg" },
+                { id: "SCZA-VRT-06", name: "NIKE AIRMAX 90", price: 2000, category: "FOOTWEAR", gender: "FEMALE", color: "GREY / WHITE / PINK", rating: 4.4, image: "3.jpeg" },
+                { id: "SCZA-PLM-07", name: "ADIDAS SPEZIAL", price: 1700, category: "FOOTWEAR", gender: "UNISEX", color: "DARK GREY", rating: 5, image: "24.jpeg" },
+                { id: "SCZA-NEO-09", name: "NIKE SHOX TL", price: 2600, category: "FOOTWEAR", gender: "UNISEX", color: "BLACK / WHITE", rating: 4.3, image: "9.jpeg" },
+                { id: "SCZA-NEO-10", name: "PUMA SUEDE XL", price: 1700, category: "FOOTWEAR", gender: "UNISEX", color: "BLACK / WHITE", rating: 4.3, image: "25.jpeg" },
+                { id: "SCZA-HSD1-10", name: "NEW BALANCE 740", price: 2200, category: "FOOTWEAR", gender: "UNISEX", color: "GREEN / WHITE", rating: 4.7, image: "4.jpeg" },
+                { id: "SCZA-HSD1-11", name: "NEW BALANCE 9060", price: 3400, category: "FOOTWEAR", gender: "UNISEX", color: "GREY MATTER", rating: 4.9, image: "2.jpeg" },
+                { id: "SCZA-HSD1-12", name: "CAMPUS 00s SHOE", price: 1800, category: "FOOTWEAR", gender: "UNISEX", color: "GREY", rating: 4.5, image: "10.jpeg" },
+                { id: "SCZA-HSD1-13", name: "SAMBA OG SHOE", price: 1900, category: "FOOTWEAR", gender: "UNISEX", color: "WHITE / BLACK", rating: 4.8, image: "23.jpeg" },
+                { id: "SCZA-HSD1-16", name: "AC MILAN JERSEY", price: 1200, category: "APPAREL", gender: "UNISEX", color: "BLUE", rating: 4.3, image: "14.jpeg" },
+                { id: "SCZA-HSD1-17", name: "MAMELODI SUNDOWNS JERSEY", price: 1500, category: "APPAREL", gender: "UNISEX", color: "YELLOW", rating: 4.8, image: "17.jpeg" },
+                { id: "SCZA-HSD1-18", name: "MANCHESTER UNITED JERSEY", price: 1300, category: "APPAREL", gender: "UNISEX", color: "RED", rating: 5, image: "12.jpeg" },
+                { id: "SCZA-HSD1-19", name: "KAIZER CHIEFS JERSEY", price: 1200, category: "APPAREL", gender: "UNISEX", color: "YELLOW AND BLACK", rating: 4.8, image: "11.jpeg" },
+                { id: "SCZA-HSD1-20", name: "BAYERN MUNICH JERSEY", price: 1000, category: "APPAREL", gender: "UNISEX", color: "RED", rating: 5, image: "15.jpeg" }
+            ];
+
+            class SneaksClubZAEngine {
+
+                constructor(productDatabaseMatrix) {
+                    this.products = productDatabaseMatrix;
+                    this.cartLedger = [];
+
+                    this.filters = {
+                        searchString: "",
+                        category: "ALL",
+                        gender: "ALL",
+                        priceCap: 12500,
+                        sortingOrder: "DEFAULT"
+                    };
+
+                    this.cacheDOMElements();
+                    this.initializeCoreState();
+                    this.registerEventBoundaries();
+                }
+
+                cacheDOMElements() {
+                    this.dom = {
+                        loader: document.getElementById('globalLoader'),
+                        loaderPercent: document.getElementById('loaderPercentage'),
+                        loaderProgress: document.getElementById('loaderProgressBar'),
+                        loaderLogs: document.getElementById('loaderLogs'),
+                        header: document.getElementById('mainHeader'),
+                        mouseGlow: document.getElementById('mouseGlow'),
+                        mobileMenu: document.getElementById('mobileMenu'),
+                        mobileMenuToggle: document.getElementById('mobileMenuToggle'),
+                        menuIcon: document.getElementById('menuIcon'),
+                        catalogGrid: document.getElementById('catalogGridMatrix'),
+                        searchOpenBtn: document.getElementById('searchOpenBtn'),
+                        searchConsoleModal: document.getElementById('searchConsoleModal'),
+                        searchConsoleClose: document.getElementById('searchConsoleCloseBtn'),
+                        modalSearchInput: document.getElementById('modalSearchInputBox'),
+                        catalogSearchInput: document.getElementById('catalogSearchInput'),
+                        categoryButtons: document.querySelectorAll('.filter-cat-btn'),
+                        genderButtons: document.querySelectorAll('.filter-gender-btn'),
+                        priceRangeSlider: document.getElementById('priceSliderRange'),
+                        priceTextIndicator: document.getElementById('priceMaxTextIndicator'),
+                        sortSelector: document.getElementById('catalogSortSelector'),
+                        productCountTelemetry: document.getElementById('productCountTelemetry'),
+                        accountModalBtn: document.getElementById('accountModalBtn'),
+                        userIdentModal: document.getElementById('userIdentificationModal'),
+                        userModalClose: document.getElementById('userModalCloseBtn'),
+                        portalForm: document.getElementById('portalAuthFormStructure'),
+                        cartOpenBtn: document.getElementById('cartOpenBtn'),
+                        cartCloseBtn: document.getElementById('cartCloseBtn'),
+                        cartDrawer: document.getElementById('cartDrawer'),
+                        cartItemsContainer: document.getElementById('cartItemsContainer'),
+                        cartCountBadge: document.getElementById('cartCountBadge'),
+                        cartSubtotal: document.getElementById('cartSubtotalText'),
+                        cartTax: document.getElementById('cartTaxText'),
+                        ctaTriggerBtn: document.getElementById('ctaTriggerPortalBtn'),
+                        footerPing: document.getElementById('footerNetworkPing')
+                    };
+                }
+
+                initializeCoreState() {
+                    this.executeLoaderRoutine(() => {
+                        this.synchronizeCachedLedgerState();
+                        this.renderCatalogGridMatrix();
+                        this.evaluateViewportScrollPosition();
+                        this.initializeIntersectionObservers();
+                    });
+
+                    this.initializeInteractiveMouseTracking();
+                    this.initializeFooterNetworkLatencySimulation();
+                }
+
+                executeLoaderRoutine(completionAnchor) {
+                    let totalProgressUnits = 0;
+
+                    const loggingMilestones = [
+                        "[LOG] INITIALIZING SECURE V2 DATA CACHE LAYERS...",
+                        "[LOG] RESOLVING REGIONAL CLUSTER PRETORIA-HQ NODES...",
+                        "[LOG] INGESTING PRODUCT MATRIX SUBSYSTEM ARRAYS...",
+                        "[LOG] VALIDATING BRUTALIST GRID LAYOUT REFFS...",
+                        "[LOG] APP ARCHIVAL INTEGRITY ENGINE DISPATCH READY."
+                    ];
+
+                    const internalIntervalTimer = setInterval(() => {
+
+                        totalProgressUnits += Math.floor(Math.random() * 8) + 4;
+
+                        if (totalProgressUnits >= 100) {
+                            totalProgressUnits = 100;
+                            clearInterval(internalIntervalTimer);
+
+                            this.dom.loaderPercent.innerText = "100%";
+                            this.dom.loaderProgress.style.width = "100%";
+
+                            setTimeout(() => {
+                                this.dom.loader.classList.add('opacity-0', 'pointer-events-none');
+
+                                if (completionAnchor) {
+                                    completionAnchor();
+                                }
+                            }, 1200);
+                        }
+
+                        this.dom.loaderPercent.innerText = `${totalProgressUnits.toString().padStart(2, '0')}%`;
+                        this.dom.loaderProgress.style.width = `${totalProgressUnits}%`;
+
+                        const milestonePointer = Math.floor((totalProgressUnits / 100) * loggingMilestones.length);
+
+                        if (
+                            loggingMilestones[milestonePointer] &&
+                            !this.dom.loaderLogs.innerHTML.includes(loggingMilestones[milestonePointer])
+                        ) {
+                            const milestoneLogElement = document.createElement('p');
+
+                            milestoneLogElement.className = "text-cyberNeonBlue transition-all font-mono break-words";
+                            milestoneLogElement.innerText = loggingMilestones[milestonePointer];
+
+                            this.dom.loaderLogs.appendChild(milestoneLogElement);
+                        }
+
+                    }, 120);
+                }
+
+                initializeInteractiveMouseTracking() {
+                    if (window.innerWidth < 768) {
+                        return;
+                    }
+
+                    window.addEventListener('mousemove', (eventFrame) => {
+
+                        const targetX = eventFrame.clientX;
+                        const targetY = eventFrame.clientY;
+
+                        requestAnimationFrame(() => {
+                            this.dom.mouseGlow.style.left = `${targetX}px`;
+                            this.dom.mouseGlow.style.top = `${targetY}px`;
+                        });
+
+                    }, { passive: true });
+                }
+
+                initializeFooterNetworkLatencySimulation() {
+                    if (!this.dom.footerPing) {
+                        return;
+                    }
+
+                    setInterval(() => {
+                        const simulatedPingValue = (Math.random() * 0.02 + 0.008).toFixed(3);
+                        this.dom.footerPing.innerText = `${simulatedPingValue}ms SECURE ROUTE ACTIVE`;
+                    }, 4000);
+                }
+
+                initializeIntersectionObservers() {
+                    const scrollRevealObserver = new IntersectionObserver((entriesCollection) => {
+
+                        entriesCollection.forEach(observedEntry => {
+
+                            if (observedEntry.isIntersecting) {
+                                observedEntry.target.classList.add('active');
+                            }
+
+                        });
+
+                    }, {
+                        threshold: 0.1,
+                        rootMargin: "0px 0px -50px 0px"
+                    });
+
+                    document.querySelectorAll('section, aside, .group').forEach(elementPointer => {
+                        elementPointer.classList.add('reveal-element');
+                        scrollRevealObserver.observe(elementPointer);
+                    });
+                }
+
+                registerEventBoundaries() {
+
+                    window.addEventListener('scroll', () => {
+                        this.evaluateViewportScrollPosition();
+                    }, { passive: true });
+
+                    this.dom.mobileMenuToggle.addEventListener('click', () => {
+                        this.toggleMobileArchitectureMenu();
+                    });
+
+                    document.querySelectorAll('.mobile-nav-link').forEach(linkElement => {
+                        linkElement.addEventListener('click', () => {
+                            this.toggleMobileArchitectureMenu(false);
+                        });
+                    });
+
+                    this.dom.searchOpenBtn.addEventListener('click', () => {
+                        this.toggleSearchConsole(true);
+                    });
+
+                    this.dom.searchConsoleClose.addEventListener('click', () => {
+                        this.toggleSearchConsole(false);
+                    });
+
+                    this.dom.searchConsoleModal.addEventListener('click', (ev) => {
+                        if (ev.target === this.dom.searchConsoleModal) {
+                            this.toggleSearchConsole(false);
+                        }
+                    });
+
+                    this.dom.modalSearchInput.addEventListener('input', (eventFrame) => {
+
+                        const searchStringValue = eventFrame.target.value;
+
+                        this.dom.catalogSearchInput.value = searchStringValue;
+                        this.filters.searchString = searchStringValue;
+
+                        this.renderCatalogGridMatrix();
+                    });
+
+                    this.dom.catalogSearchInput.addEventListener('input', (eventFrame) => {
+
+                        const searchStringValue = eventFrame.target.value;
+
+                        this.dom.modalSearchInput.value = searchStringValue;
+                        this.filters.searchString = searchStringValue;
+
+                        this.renderCatalogGridMatrix();
+                    });
+
+                    this.dom.categoryButtons.forEach(buttonElement => {
+
+                        buttonElement.addEventListener('click', () => {
+
+                            this.dom.categoryButtons.forEach(btn => {
+                                btn.className = "filter-cat-btn flex justify-between items-center gap-3 text-black/60 hover:text-charcoal text-left py-2.5 px-4 border-l-2 border-transparent transition-all no-min-target whitespace-nowrap shrink-0 rounded-r-lg";
+                            });
+
+                            buttonElement.className = "filter-cat-btn flex justify-between items-center gap-3 text-cyberNeonBlue font-bold text-left py-2.5 px-4 border-l-2 border-cyberNeonBlue bg-black/5 transition-all no-min-target whitespace-nowrap shrink-0 rounded-r-lg";
+
+                            this.filters.category = buttonElement.getAttribute('data-category');
+
+                            this.renderCatalogGridMatrix();
+                        });
+
+                    });
+
+                    this.dom.genderButtons.forEach(buttonElement => {
+
+                        buttonElement.addEventListener('click', () => {
+
+                            this.dom.genderButtons.forEach(btn => {
+                                btn.className = "filter-gender-btn py-3 border border-black/5 bg-white/50 hover:border-black/20 text-black/60 transition-colors no-min-target min-w-0 break-words rounded-xl";
+                            });
+
+                            buttonElement.className = "filter-gender-btn py-3 border border-cyberNeonBlue bg-cyberNeonBlue/5 text-cyberNeonBlue font-bold transition-colors no-min-target min-w-0 break-words rounded-xl";
+
+                            this.filters.gender = buttonElement.getAttribute('data-gender');
+
+                            this.renderCatalogGridMatrix();
+                        });
+
+                    });
+
+                    this.dom.priceRangeSlider.addEventListener('input', (eventFrame) => {
+
+                        const numericPriceThreshold = parseInt(eventFrame.target.value, 10);
+
+                        this.dom.priceTextIndicator.innerText = `R${numericPriceThreshold.toLocaleString('en-ZA')}`;
+
+                        this.filters.priceCap = numericPriceThreshold;
+
+                        this.renderCatalogGridMatrix();
+                    });
+
+                    this.dom.sortSelector.addEventListener('change', (eventFrame) => {
+
+                        this.filters.sortingOrder = eventFrame.target.value;
+
+                        this.renderCatalogGridMatrix();
+                    });
+
+                    this.dom.accountModalBtn.addEventListener('click', () => {
+                        this.toggleUserIdentificationModal(true);
+                    });
+
+                    this.dom.userModalClose.addEventListener('click', () => {
+                        this.toggleUserIdentificationModal(false);
+                    });
+
+                    this.dom.ctaTriggerBtn.addEventListener('click', () => {
+                        this.toggleUserIdentificationModal(true);
+                    });
+
+                    this.dom.portalForm.addEventListener('submit', (eventFrame) => {
+
+                        eventFrame.preventDefault();
+
+                        alert("[AUTHENTICATION PROMPT SUCCESS] Secure connection established with Pretoria cluster node databases.");
+
+                        this.toggleUserIdentificationModal(false);
+                    });
+
+                    this.dom.cartOpenBtn.addEventListener('click', () => {
+                        this.toggleCartDrawerArchitecture(true);
+                    });
+
+                    this.dom.cartCloseBtn.addEventListener('click', () => {
+                        this.toggleCartDrawerArchitecture(false);
+                    });
+
+                    const checkoutForm = document.getElementById('checkoutForm');
+                    if (checkoutForm) {
+                        checkoutForm.addEventListener('submit', (e) => {
+                            this.submitCheckout(e);
+                        });
+                    }
+
+                    const sendOrderBtn = document.getElementById('sendOrderWhatsAppBtn');
+                    if (sendOrderBtn) {
+                        sendOrderBtn.addEventListener('click', () => {
+                            if (this.currentOrder) {
+                                this.sendOrderWhatsApp(this.currentOrder);
+                            }
+                        });
+                    }
+
+                    const sendProofBtn = document.getElementById('sendProofWhatsAppBtn');
+                    if (sendProofBtn) {
+                        sendProofBtn.addEventListener('click', () => {
+                            if (this.currentOrder) {
+                                this.sendProofWhatsApp(this.currentOrder);
+                            }
+                        });
+                    }
+
+                    const returnToShopBtn = document.getElementById('returnToShopBtn');
+                    if (returnToShopBtn) {
+                        returnToShopBtn.addEventListener('click', () => {
+                            this.cartLedger = [];
+                            this.synchronizeCartUserInterfaceMatrix();
+                            this.writeLocalStorageCacheLedgerState();
+                            this.toggleCartDrawerArchitecture(false);
+
+                            document.getElementById('checkoutForm').classList.remove('hidden');
+                            document.getElementById('bankDetailsSection').classList.add('hidden');
+                            document.getElementById('checkoutForm').reset();
+                        });
+                    }
+
+                    const copyRefBtn = document.getElementById('copyRefBtn');
+                    if (copyRefBtn) {
+                        copyRefBtn.addEventListener('click', () => {
+                            const refText = document.getElementById('orderReferenceDisplay').textContent;
+                            if (refText && refText !== '-') {
+                                this.copyToClipboard(refText, 'Reference');
+                            }
+                        });
+                    }
+
+                    window.addEventListener('keydown', (event) => {
+
+                        if (event.key === 'Escape') {
+                            this.toggleSearchConsole(false);
+                            this.toggleUserIdentificationModal(false);
+                            this.toggleCartDrawerArchitecture(false);
+                            this.toggleMobileArchitectureMenu(false);
+                        }
+
+                    });
+                }
+
+                evaluateViewportScrollPosition() {
+
+                    const scrollVerticalOffset = window.scrollY;
+                    const isMobileViewport = window.innerWidth < 1024;
+
+                    if (scrollVerticalOffset > 50) {
+
+                        if (!isMobileViewport) {
+                            this.dom.header.classList.remove('top-8');
+                            this.dom.header.classList.add('top-2', 'shadow-md');
+                        } else {
+                            this.dom.header.classList.add('shadow-md');
+                        }
+
+                    } else {
+
+                        if (!isMobileViewport) {
+                            this.dom.header.classList.remove('top-2', 'shadow-md');
+                            this.dom.header.classList.add('top-8');
+                        } else {
+                            this.dom.header.classList.remove('shadow-md');
+                        }
+
+                    }
+                }
+
+                toggleMobileArchitectureMenu(forcedState) {
+
+                    const isCurrentlyClosed = this.dom.mobileMenu.classList.contains('translate-x-full');
+
+                    const shouldOpen = forcedState !== undefined
+                        ? forcedState
+                        : isCurrentlyClosed;
+
+                    if (shouldOpen) {
+
+                        this.dom.mobileMenu.classList.remove('translate-x-full');
+
+                        this.dom.menuIcon.innerHTML = `
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path>
+                        `;
+
+                        document.body.classList.add('overflow-hidden');
+
+                    } else {
+
+                        this.dom.mobileMenu.classList.add('translate-x-full');
+
+                        this.dom.menuIcon.innerHTML = `
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                        `;
+
+                        document.body.classList.remove('overflow-hidden');
+
+                    }
+                }
+
+                toggleSearchConsole(shouldOpen) {
+
+                    if (shouldOpen) {
+
+                        this.dom.searchConsoleModal.classList.remove('opacity-0', 'pointer-events-none');
+                        this.dom.searchConsoleModal.querySelector('div').classList.remove('scale-95');
+                        this.dom.searchConsoleModal.querySelector('div').classList.add('scale-100');
+
+                        setTimeout(() => {
+                            this.dom.modalSearchInput.focus();
+                        }, 200);
+
+                    } else {
+
+                        this.dom.searchConsoleModal.classList.add('opacity-0', 'pointer-events-none');
+                        this.dom.searchConsoleModal.querySelector('div').classList.remove('scale-100');
+                        this.dom.searchConsoleModal.querySelector('div').classList.add('scale-95');
+
+                    }
+                }
+
+                toggleUserIdentificationModal(shouldOpen) {
+
+                    if (shouldOpen) {
+                        this.dom.userIdentModal.classList.remove('opacity-0', 'pointer-events-none');
+                    } else {
+                        this.dom.userIdentModal.classList.add('opacity-0', 'pointer-events-none');
+                    }
+                }
+
+                toggleCartDrawerArchitecture(shouldOpen) {
+
+                    if (shouldOpen) {
+                        this.dom.cartDrawer.classList.remove('translate-x-full');
+                    } else {
+                        this.dom.cartDrawer.classList.add('translate-x-full');
+                    }
+                }
+
+                renderCatalogGridMatrix() {
+
+                    let datasetSequence = [...this.products];
+
+                    if (this.filters.searchString.trim() !== "") {
+
+                        const parsedSearchToken = this.filters.searchString.toLowerCase();
+
+                        datasetSequence = datasetSequence.filter(pItem =>
+                            pItem.name.toLowerCase().includes(parsedSearchToken) ||
+                            pItem.id.toLowerCase().includes(parsedSearchToken) ||
+                            pItem.color.toLowerCase().includes(parsedSearchToken)
+                        );
+                    }
+
+                    if (this.filters.category !== "ALL") {
+                        datasetSequence = datasetSequence.filter(pItem => pItem.category === this.filters.category);
+                    }
+
+                    if (this.filters.gender !== "ALL") {
+                        datasetSequence = datasetSequence.filter(
+                            pItem => pItem.gender === this.filters.gender || pItem.gender === "UNISEX"
+                        );
+                    }
+
+                    datasetSequence = datasetSequence.filter(
+                        pItem => pItem.price <= this.filters.priceCap
+                    );
+
+                    if (this.filters.sortingOrder === "PRICE_ASC") {
+                        datasetSequence.sort((a, b) => a.price - b.price);
+                    } else if (this.filters.sortingOrder === "PRICE_DESC") {
+                        datasetSequence.sort((a, b) => b.price - a.price);
+                    }
+
+                    this.dom.productCountTelemetry.innerText = `${datasetSequence.length} ITEMS MATCHED`;
+
+                    if (datasetSequence.length === 0) {
+
+                        this.dom.catalogGrid.innerHTML = `
+                            <div class="col-span-full py-20 text-center font-mono text-xs text-black/30 space-y-3 min-w-0">
+                                <p class="break-words">
+                                    [SYSTEM LOG ALERT: NO COMPATIBLE ARCHIVAL OVERLAYS REGISTERED]
+                                </p>
+
+                                <button id="resetFiltersTelemetryActionBtn" class="text-cyberNeonBlue font-bold underline cursor-pointer hover:text-charcoal transition-colors break-words">
+                                    RESET ALL SELECTION PARAMETERS
+                                </button>
+                            </div>
+                        `;
+
+                        document.getElementById('resetFiltersTelemetryActionBtn').addEventListener('click', () => {
+                            this.resetAllFilterParameters();
+                        });
+
+                        return;
+                    }
+
+                    this.dom.catalogGrid.innerHTML = "";
+
+                    datasetSequence.forEach(productData => {
+
+                        const itemContainerNode = document.createElement('div');
+
+                        itemContainerNode.className = "bg-white/40 backdrop-blur-md border border-white/60 p-5 sm:p-6 flex flex-col justify-between group hover:-translate-y-1.5 hover:shadow-2xl apple-transition rounded-2xl relative overflow-hidden min-w-0";
+
+                        itemContainerNode.innerHTML = `
+                            <div class="space-y-4 min-w-0">
+
+                                <div class="h-56 bg-[#F8F9FA] relative flex items-center justify-center border-b border-black/[0.04] overflow-hidden min-w-0 rounded-xl shadow-inner">
+                                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0%,transparent_100%)]"></div>
+                                    <img
+                                        src="${productData.image}"
+                                        alt="${productData.name}"
+                                        class="w-[85%] h-[85%] object-contain p-2 group-hover:scale-105 apple-transition will-change-transform z-10"
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                                    >
+
+                                    <div class="hidden text-center text-black/20 font-mono text-[9px] absolute uppercase break-words z-10">
+                                        [IMAGE NOT DEPLOYED]
+                                    </div>
+
+                                    <span class="absolute top-3 left-3 bg-black/85 text-white text-[8px] font-mono font-bold px-2 py-1 rounded tracking-wider uppercase break-words max-w-[70%] z-20">
+                                        ${productData.id}
+                                    </span>
+
+                                </div>
+
+                                <div class="space-y-1 pt-1 min-w-0">
+
+                                    <div class="flex justify-between items-start gap-3 min-w-0">
+
+                                        <h4 class="font-display text-sm font-bold text-charcoal tracking-wide uppercase leading-tight break-words min-w-0">
+                                            ${productData.name}
+                                        </h4>
+
+                                        <span class="font-mono text-xs font-semibold text-cyberNeonBlue whitespace-nowrap shrink-0">
+                                            R${productData.price.toLocaleString('en-ZA')}
+                                        </span>
+
+                                    </div>
+
+                                    <p class="font-mono text-[9px] text-softSteelBlue uppercase tracking-wider break-words">
+                                        SPEC // ${productData.color} [${productData.gender}]
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="pt-4 mt-4 border-t border-black/[0.05] flex justify-between items-center gap-4 min-w-0">
+
+                                <div class="flex items-center text-amber-500 font-mono text-[10px] font-bold shrink-0">
+                                    <span class="mr-1">★</span>
+                                    <span>${productData.rating.toFixed(1)}</span>
+                                </div>
+
+                                <div class="action-button-target-wrapper flex-1 flex justify-end min-w-0">
+                                    <button data-add-id="${productData.id}" class="add-to-cart-action-btn px-4 py-2 bg-charcoal text-white font-mono text-[10px] font-bold uppercase tracking-wider hover:bg-cyberNeonBlue rounded-lg apple-transition no-min-target shadow-sm break-words text-center">
+                                        ADD TO SELECTION
+                                    </button>
+                                </div>
+
+                            </div>
+                        `;
+
+                        this.dom.catalogGrid.appendChild(itemContainerNode);
+
+                        const actionBtn = itemContainerNode.querySelector('.add-to-cart-action-btn');
+
+                        actionBtn.addEventListener('click', (eventFrame) => {
+
+                            eventFrame.stopPropagation();
+
+                            const wrapper = itemContainerNode.querySelector('.action-button-target-wrapper');
+
+                            let sizesArray = [];
+
+                            if (productData.category === "FOOTWEAR") {
+                                sizesArray = ["UK 8", "UK 9", "UK 10", "UK 11"];
+                            } else if (productData.category === "APPAREL") {
+                                sizesArray = ["S", "M", "L", "XL"];
+                            }
+
+                            let sizeButtonsMarkup = `
+                                <div class="grid grid-cols-4 gap-1 w-full animate-fadeIn min-w-0">
+                            `;
+
+                            sizesArray.forEach(sz => {
+
+                                sizeButtonsMarkup += `
+                                    <button data-select-size="${sz}" class="size-selection-sub-trigger text-center py-2 border border-black/5 bg-white/80 hover:bg-cyberNeonBlue hover:text-white font-mono text-[9px] font-bold rounded transition-all duration-200 no-min-target break-words min-w-0">
+                                        ${sz}
+                                    </button>
+                                `;
+                            });
+
+                            sizeButtonsMarkup += `</div>`;
+
+                            wrapper.innerHTML = sizeButtonsMarkup;
+
+                            wrapper.querySelectorAll('.size-selection-sub-trigger').forEach(subBtn => {
+
+                                subBtn.addEventListener('click', (szEvent) => {
+
+                                    szEvent.stopPropagation();
+
+                                    const selectedSizeString = subBtn.getAttribute('data-select-size');
+
+                                    this.appendItemToCartLedger(productData.id, selectedSizeString);
+
+                                    this.renderCatalogGridMatrix();
+
+                                });
+
+                            });
+
+                        });
+
+                    });
+                }
+
+                resetAllFilterParameters() {
+
+                    this.filters = {
+                        searchString: "",
+                        category: "ALL",
+                        gender: "ALL",
+                        priceCap: 12500,
+                        sortingOrder: "DEFAULT"
+                    };
+
+                    this.dom.catalogSearchInput.value = "";
+                    this.dom.modalSearchInput.value = "";
+
+                    this.dom.priceRangeSlider.value = 12500;
+                    this.dom.priceTextIndicator.innerText = "R12,500";
+
+                    this.dom.sortSelector.value = "DEFAULT";
+
+                    this.dom.categoryButtons.forEach(btn => {
+
+                        btn.className = "filter-cat-btn flex justify-between items-center gap-3 text-black/60 hover:text-charcoal text-left py-2.5 px-4 border-l-2 border-transparent transition-all no-min-target whitespace-nowrap shrink-0 rounded-r-lg";
+
+                        if (btn.getAttribute('data-category') === "ALL") {
+                            btn.className = "filter-cat-btn flex justify-between items-center gap-3 text-cyberNeonBlue font-bold text-left py-2.5 px-4 border-l-2 border-cyberNeonBlue bg-black/5 transition-all no-min-target whitespace-nowrap shrink-0 rounded-r-lg";
+                        }
+                    });
+
+                    this.dom.genderButtons.forEach(btn => {
+
+                        btn.className = "filter-gender-btn py-3 border border-black/5 bg-white/50 hover:border-black/20 text-black/60 transition-colors no-min-target min-w-0 break-words rounded-xl";
+
+                        if (btn.getAttribute('data-gender') === "ALL") {
+                            btn.className = "filter-gender-btn py-3 border border-cyberNeonBlue bg-cyberNeonBlue/5 text-cyberNeonBlue font-bold transition-colors no-min-target min-w-0 break-words rounded-xl";
+                        }
+                    });
+
+                    this.renderCatalogGridMatrix();
+                }
+
+                appendItemToCartLedger(productId, selectedSize) {
+
+                    const linkedProductRecord = this.products.find(p => p.id === productId);
+
+                    if (!linkedProductRecord) {
+                        return;
+                    }
+
+                    const unifiedLedgerKey = `${productId}-${selectedSize}`;
+
+                    const targetLedgerIndex = this.cartLedger.findIndex(
+                        item => item.id === unifiedLedgerKey
+                    );
+
+                    if (targetLedgerIndex > -1) {
+
+                        this.cartLedger[targetLedgerIndex].quantity += 1;
+
+                    } else {
+
+                        this.cartLedger.push({
+                            id: unifiedLedgerKey,
+                            baseProductId: linkedProductRecord.id,
+                            name: `${linkedProductRecord.name} (${selectedSize})`,
+                            price: linkedProductRecord.price,
+                            color: linkedProductRecord.color,
+                            sizeLabel: selectedSize,
+                            quantity: 1
+                        });
+
+                    }
+
+                    this.synchronizeCartUserInterfaceMatrix();
+                    this.writeLocalStorageCacheLedgerState();
+                    this.toggleCartDrawerArchitecture(true);
+                }
+
+                removeLedgerRecord(ledgerKey) {
+
+                    this.cartLedger = this.cartLedger.filter(item => item.id !== ledgerKey);
+
+                    this.synchronizeCartUserInterfaceMatrix();
+                    this.writeLocalStorageCacheLedgerState();
+                }
+
+                synchronizeCartUserInterfaceMatrix() {
+
+                    let collectiveUnitsAccumulator = 0;
+                    let calculatedFinancialSubtotal = 0;
+
+                    if (this.cartLedger.length === 0) {
+
+                        this.dom.cartItemsContainer.innerHTML = `
+                            <div class="text-center py-12 text-black/30 font-mono text-xs space-y-3">
+                                <svg class="w-8 h-8 mx-auto text-black/10 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                </svg>
+
+                                <p class="break-words">
+                                    YOUR SELECTION SUMMARY IS VACANT.
+                                </p>
+                            </div>
+                        `;
+
+                        document.getElementById('cartSummarySection').classList.add('hidden');
+
+                    } else {
+
+                        document.getElementById('cartSummarySection').classList.remove('hidden');
+
+                        this.dom.cartItemsContainer.innerHTML = "";
+
+                        this.cartLedger.forEach(ledgerRecord => {
+
+                            collectiveUnitsAccumulator += ledgerRecord.quantity;
+
+                            calculatedFinancialSubtotal += (ledgerRecord.price * ledgerRecord.quantity);
+
+                            const recordRowElement = document.createElement('div');
+
+                            recordRowElement.className = "flex gap-3 py-4 border-b border-black/[0.05] min-w-0";
+
+                            recordRowElement.innerHTML = `
+                                <div class="flex-1 space-y-1.5 min-w-0">
+                                    <h5 class="font-mono text-[11px] font-bold text-charcoal uppercase tracking-wide leading-tight break-words">
+                                        ${ledgerRecord.name}
+                                    </h5>
+
+                                    <p class="font-mono text-[10px] text-softSteelBlue uppercase break-words">
+                                        R${ledgerRecord.price.toLocaleString('en-ZA')} [${ledgerRecord.color}]
+                                    </p>
+
+                                    <div class="flex items-center gap-2 pt-1">
+                                        <button data-update-id="${ledgerRecord.id}" data-change="-1" class="update-qty-btn w-6 h-6 rounded border border-black/10 text-[10px] font-mono hover:border-cyberNeonBlue hover:text-cyberNeonBlue transition-colors flex items-center justify-center bg-white/70">-</button>
+                                        <span class="font-mono text-[11px] font-bold text-charcoal min-w-[20px] text-center">${ledgerRecord.quantity}</span>
+                                        <button data-update-id="${ledgerRecord.id}" data-change="1" class="update-qty-btn w-6 h-6 rounded border border-black/10 text-[10px] font-mono hover:border-cyberNeonBlue hover:text-cyberNeonBlue transition-colors flex items-center justify-center bg-white/70">+</button>
+                                        <button data-remove-id="${ledgerRecord.id}" class="remove-ledger-item-anchor ml-2 text-[9px] text-red-500 hover:text-charcoal transition-colors font-mono no-min-target break-words">
+                                            [REMOVE]
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="text-right space-y-1 shrink-0">
+                                    <p class="font-mono text-[11px] font-bold text-cyberNeonBlue whitespace-nowrap">
+                                        R${(ledgerRecord.price * ledgerRecord.quantity).toLocaleString('en-ZA')}
+                                    </p>
+                                </div>
+                            `;
+
+                            this.dom.cartItemsContainer.appendChild(recordRowElement);
+
+                            recordRowElement.querySelector('.remove-ledger-item-anchor').addEventListener('click', () => {
+                                this.removeLedgerRecord(ledgerRecord.id);
+                            });
+
+                            recordRowElement.querySelectorAll('.update-qty-btn').forEach(btn => {
+                                btn.addEventListener('click', () => {
+                                    const id = btn.getAttribute('data-update-id');
+                                    const change = parseInt(btn.getAttribute('data-change'));
+                                    this.updateLedgerQuantity(id, change);
+                                });
+                            });
+
+                        });
+                    }
+
+                    this.dom.cartSubtotal.innerText = `R${calculatedFinancialSubtotal.toLocaleString('en-ZA', {minimumFractionDigits: 2})}`;
+
+                    const simulatedVatAmount = calculatedFinancialSubtotal * 0.15;
+
+                    this.dom.cartTax.innerText = `R${simulatedVatAmount.toLocaleString('en-ZA', {minimumFractionDigits: 2})}`;
+
+                    const totalAmount = calculatedFinancialSubtotal + simulatedVatAmount;
+                    const totalTextEl = document.getElementById('cartTotalText');
+                    if (totalTextEl) {
+                        totalTextEl.innerText = `R${totalAmount.toLocaleString('en-ZA', {minimumFractionDigits: 2})}`;
+                    }
+
+                    if (collectiveUnitsAccumulator > 0) {
+
+                        this.dom.cartCountBadge.innerText = collectiveUnitsAccumulator;
+
+                        this.dom.cartCountBadge.classList.remove('scale-0');
+                        this.dom.cartCountBadge.classList.add('scale-100');
+
+                    } else {
+
+                        this.dom.cartCountBadge.innerText = "0";
+
+                        this.dom.cartCountBadge.classList.remove('scale-100');
+                        this.dom.cartCountBadge.classList.add('scale-0');
+
+                    }
+                }
+
+                updateLedgerQuantity(ledgerKey, change) {
+                    const item = this.cartLedger.find(i => i.id === ledgerKey);
+                    if (!item) return;
+                    item.quantity += change;
+                    if (item.quantity <= 0) {
+                        this.removeLedgerRecord(ledgerKey);
+                    } else {
+                        this.synchronizeCartUserInterfaceMatrix();
+                        this.writeLocalStorageCacheLedgerState();
+                    }
+                }
+
+                writeLocalStorageCacheLedgerState() {
+
+                    try {
+
+                        localStorage.setItem(
+                            "sc_secure_cart_ledger_v2",
+                            JSON.stringify(this.cartLedger)
+                        );
+
+                    } catch (storageError) {
+
+                        console.error("[CRITICAL STORAGE EXCEPTION ROUTINE FAULT]", storageError);
+
+                    }
+                }
+
+                synchronizeCachedLedgerState() {
+
+                    try {
+
+                        const retrievedCacheString = localStorage.getItem("sc_secure_cart_ledger_v2");
+
+                        if (retrievedCacheString) {
+
+                            this.cartLedger = JSON.parse(retrievedCacheString);
+
+                            this.synchronizeCartUserInterfaceMatrix();
+                        }
+
+                    } catch (cacheFetchError) {
+
+                        console.error("[CRITICAL STATE SYNCING PARSING FAULT]", cacheFetchError);
+
+                        this.cartLedger = [];
+                    }
+                }
+
+                makeOrderNumber() {
+                    const date = new Date();
+                    const stamp = date.toISOString().slice(2, 10).replace(/-/g, '');
+                    const suffix = String(date.getTime()).slice(-5);
+                    return `SCZA-${stamp}-${suffix}`;
+                }
+
+                showToast(message) {
+                    const toast = document.getElementById('sneaksclubToast');
+                    const toastMessage = document.getElementById('toastMessage');
+                    toastMessage.textContent = message;
+                    toast.classList.remove('opacity-0', 'translate-y-4');
+                    toast.classList.add('opacity-100', 'translate-y-0');
+                    setTimeout(() => {
+                        toast.classList.remove('opacity-100', 'translate-y-0');
+                        toast.classList.add('opacity-0', 'translate-y-4');
+                    }, 2500);
+                }
+
+                copyToClipboard(text, label) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        this.showToast(`${label} copied!`);
+                    }).catch(() => {
+                        this.showToast('Copy failed');
+                    });
+                }
+
+                getCartTotals() {
+                    let subtotal = 0;
+                    let itemCount = 0;
+                    this.cartLedger.forEach(item => {
+                        subtotal += item.price * item.quantity;
+                        itemCount += item.quantity;
+                    });
+                    const vat = subtotal * 0.15;
+                    const total = subtotal + vat;
+                    return { subtotal, vat, total, itemCount };
+                }
+
+                submitCheckout(event) {
+                    event.preventDefault();
+
+                    if (this.cartLedger.length === 0) {
+                        this.showToast('Cart is empty');
+                        return;
+                    }
+
+                    const form = document.getElementById('checkoutForm');
+                    if (!form.reportValidity()) return;
+
+                    const orderNumber = this.makeOrderNumber();
+                    const { subtotal, vat, total } = this.getCartTotals();
+
+                    const customerName = document.getElementById('checkoutName').value;
+                    const customerPhone = document.getElementById('checkoutPhone').value;
+                    const customerAddress = document.getElementById('checkoutAddress').value;
+                    const deliveryTiming = document.getElementById('checkoutDelivery').value;
+                    const notes = document.getElementById('checkoutNotes').value;
+
+                    const order = {
+                        orderNumber,
+                        items: [...this.cartLedger],
+                        subtotal,
+                        vat,
+                        total,
+                        customer: {
+                            name: customerName,
+                            phone: customerPhone,
+                            address: customerAddress,
+                            delivery: deliveryTiming,
+                            notes
+                        },
+                        timestamp: new Date().toISOString(),
+                        status: 'pending'
+                    };
+
+                    this.saveOrder(order);
+                    this.currentOrder = order;
+
+                    document.getElementById('orderReferenceDisplay').textContent = orderNumber;
+                    document.getElementById('orderAmountDisplay').textContent = `R${total.toLocaleString('en-ZA', {minimumFractionDigits: 2})}`;
+
+                    document.getElementById('checkoutForm').classList.add('hidden');
+                    document.getElementById('bankDetailsSection').classList.remove('hidden');
+
+                    this.showToast('Order placed successfully!');
+                }
+
+                sendOrderWhatsApp(order) {
+                    let message = `*SNEAKSCLUBZA ORDER*%0A%0A`;
+                    message += `*Order:* ${order.orderNumber}%0A`;
+                    message += `*Name:* ${order.customer.name}%0A`;
+                    message += `*WhatsApp:* ${order.customer.phone}%0A`;
+                    message += `*Address:* ${order.customer.address}%0A`;
+                    message += `*Timing:* ${order.customer.delivery}%0A%0A`;
+                    message += `*Items:*%0A`;
+
+                    order.items.forEach(item => {
+                        message += `• ${item.name} x${item.quantity} = R${(item.price * item.quantity).toLocaleString('en-ZA')}%0A`;
+                    });
+
+                    message += `%0A*Subtotal:* R${order.subtotal.toLocaleString('en-ZA', {minimumFractionDigits: 2})}%0A`;
+                    message += `*VAT (15%):* R${order.vat.toLocaleString('en-ZA', {minimumFractionDigits: 2})}%0A`;
+                    message += `*TOTAL:* R${order.total.toLocaleString('en-ZA', {minimumFractionDigits: 2})}%0A%0A`;
+                    message += `*Payment Method:* EFT%0A`;
+                    message += `*Notes:* ${order.customer.notes || 'None'}%0A%0A`;
+                    message += `Status: Order placed, awaiting payment.`;
+
+                    const whatsappUrl = `https://wa.me/${BANK_CONFIG.whatsappNumber}?text=${message}`;
+                    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+                }
+
+                sendProofWhatsApp(order) {
+                    let message = `*PROOF OF PAYMENT*%0A%0A`;
+                    message += `*Order:* ${order.orderNumber}%0A`;
+                    message += `*Amount:* R${order.total.toLocaleString('en-ZA', {minimumFractionDigits: 2})}%0A`;
+                    message += `*Bank:* Standard Bank%0A`;
+                    message += `*Account:* ${BANK_CONFIG.accountNumber}%0A`;
+                    message += `*Reference:* ${order.orderNumber}%0A%0A`;
+                    message += `Please attach your proof of payment screenshot.`;
+
+                    const whatsappUrl = `https://wa.me/${BANK_CONFIG.whatsappNumber}?text=${message}`;
+                    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+                }
+
+                saveOrder(order) {
+                    try {
+                        const orders = JSON.parse(localStorage.getItem('sneaksclub_orders') || '[]');
+                        orders.push(order);
+                        localStorage.setItem('sneaksclub_orders', JSON.stringify(orders));
+                    } catch (e) {
+                        console.error('Failed to save order:', e);
+                    }
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                window.SneaksClubGlobalAppInstance = new SneaksClubZAEngine(SCALABLE_PRODUCT_REPOSITORY);
+            });
+        })();
+    </script>
+
+</body>
+</html>
